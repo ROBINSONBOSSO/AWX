@@ -1,0 +1,33 @@
+  
+- name: Create  a VM from a template
+  hosts: localhost
+  tasks:
+  - name: Create a VM from template
+    vmware_guest:
+      validate_certs: false
+      hostname: "{{ vcenter_hostname }}"
+      username: "{{ vcenter_user }}"
+      password: "{{ vcenter_pass }}"
+      folder: VMtemplate
+      name: "{{ vm_name }}"
+      state: poweredoff
+      guest_id: centos64Guest
+      datastore: "{{ Datastore }}"
+      datacenter: "{{ Datacenter }}"
+      cluster: Cluster
+      disk:
+      - size_gb: "{{ size_disk }}"
+        type: eagerzeroedthick
+      hardware:
+        memory_mb: "{{ memory }}"
+        num_cpus: "{{ cpu }}"
+        num_cpu_cores_per_socket: 1
+        scsi: paravirtual
+      networks:
+      - name: VM Network
+        mac: aa:bb:dd:aa:00:14
+        ip: "{{ ip }}"
+        netmask: 255.255.255.0
+        device type: vmxnet3
+    delegate_to: localhost
+    register: deploy
